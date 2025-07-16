@@ -22,6 +22,21 @@ class ShopServiceTest {
     }
 
     @Test
+    void updateOderTest() {
+
+        ShopService shopService = new ShopService();
+        List<String> productsIds = List.of("1");
+        Order oldOrder = shopService.addOrder(productsIds);
+
+        Order newOrder = shopService.updateOrder(oldOrder, OrderStatus.IN_DELIVERY);
+
+        assertNotEquals(oldOrder, newOrder);
+        assertEquals(oldOrder.id(), newOrder.id());
+        assertEquals(oldOrder.products(), newOrder.products());
+        assertNotEquals(oldOrder.status(), newOrder.status());
+    }
+
+    @Test
     void addOrderTest_whenInvalidProductId_expectException() {
         //GIVEN
         ShopService shopService = new ShopService();
