@@ -1,5 +1,6 @@
 import org.junit.jupiter.api.Test;
 
+import java.time.Instant;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,9 +17,14 @@ class ShopServiceTest {
         Order actual = shopService.addOrder(productsIds);
 
         //THEN
-        Order expected = new Order("-1", List.of(new Product("1", "Apfel")), OrderStatus.PROCESSING);
+        Order expected = new Order("-1", List.of(new Product("1", "Apfel")), OrderStatus.PROCESSING, Instant.now());
         assertEquals(expected.products(), actual.products());
         assertNotNull(expected.id());
+
+        Instant now = Instant.now();
+        Instant orderTime = expected.creationTime();
+        assertFalse(now.isBefore(orderTime));
+        assertTrue(now.getEpochSecond() - orderTime.getEpochSecond() < 10);
     }
 
     @Test
@@ -33,6 +39,7 @@ class ShopServiceTest {
         assertNotEquals(oldOrder, newOrder);
         assertEquals(oldOrder.id(), newOrder.id());
         assertEquals(oldOrder.products(), newOrder.products());
+        assertEquals(oldOrder.creationTime(), newOrder.creationTime());
         assertNotEquals(oldOrder.status(), newOrder.status());
     }
 
