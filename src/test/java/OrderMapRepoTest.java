@@ -2,7 +2,9 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -77,5 +79,27 @@ class OrderMapRepoTest {
 
         //THEN
         assertNull(repo.getOrderById("1"));
+    }
+
+    @Test
+    void getOldestOrders() {
+        OrderMapRepo repo = new OrderMapRepo();
+        repo.addOrder(new Order("1", List.of(new Product("1", "Apfel")), OrderStatus.COMPLETED, Instant.now()));
+        try{Thread.sleep(100);} catch (Exception e) {}
+        repo.addOrder(new Order("2", List.of(new Product("1", "Apfel")), OrderStatus.IN_DELIVERY, Instant.now()));
+        try{Thread.sleep(100);} catch (Exception e) {}
+        repo.addOrder(new Order("3", List.of(new Product("1", "Apfel")), OrderStatus.COMPLETED, Instant.now()));
+        try{Thread.sleep(100);} catch (Exception e) {}
+        repo.addOrder(new Order("4", List.of(new Product("1", "Apfel")), OrderStatus.COMPLETED, Instant.now()));
+        try{Thread.sleep(100);} catch (Exception e) {}
+        repo.addOrder(new Order("5", List.of(new Product("1", "Apfel")), OrderStatus.COMPLETED, Instant.now()));
+        try{Thread.sleep(100);} catch (Exception e) {}
+        repo.addOrder(new Order("6", List.of(new Product("1", "Apfel")), OrderStatus.COMPLETED, Instant.now()));
+
+        Map<OrderStatus, Order> map = repo.getOldestOrderPerStatus();
+
+        assertEquals("1", map.get(OrderStatus.COMPLETED).id());
+        assertEquals("2", map.get(OrderStatus.IN_DELIVERY).id());
+        assertNull(map.get(OrderStatus.PROCESSING));
     }
 }

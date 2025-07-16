@@ -1,5 +1,7 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class OrderListRepo implements OrderRepo{
     private final List<Order> orders = new ArrayList<>();
@@ -29,5 +31,23 @@ public class OrderListRepo implements OrderRepo{
                 return;
             }
         }
+    }
+
+    @Override
+    public Map<OrderStatus, Order> getOldestOrderPerStatus() {
+        HashMap<OrderStatus, Order> map = new HashMap<>();
+        for (OrderStatus status : OrderStatus.values()) {
+            List<Order> sortedAndFilteredList =
+                    getOrders().stream()
+                            .filter(o -> o.status()==status)
+                            .sorted((o1, o2) -> o1.creationTime().compareTo(o2.creationTime()))
+                            .toList();
+            if(sortedAndFilteredList.isEmpty()) {
+                map.put(status, null);
+            } else {
+                map.put(status, sortedAndFilteredList.get(0));
+            }
+        }
+        return map;
     }
 }

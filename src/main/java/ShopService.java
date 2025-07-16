@@ -1,12 +1,16 @@
+import lombok.RequiredArgsConstructor;
+
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@RequiredArgsConstructor
 public class ShopService {
-    private final ProductRepo productRepo = new ProductRepo();
-    private final OrderRepo orderRepo = new OrderMapRepo();
+    private final ProductRepo productRepo;// = new ProductRepo();
+    private final OrderRepo orderRepo;// = new OrderMapRepo();
+    private final IdService idService;
 
     public Order addOrder(List<String> productIds) throws ProductNotFoundException{
         List<Product> products = new ArrayList<>();
@@ -26,4 +30,6 @@ public class ShopService {
     public Order updateOrder(Order oldOrder, OrderStatus newOrderStatus) {
         return oldOrder.withStatus(newOrderStatus);
     }
+
+
 }
