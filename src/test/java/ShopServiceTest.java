@@ -11,15 +11,20 @@ class ShopServiceTest {
     void addOrderTest() {
         //GIVEN
         ProductRepo repo = new ProductRepo();
-        repo.addProduct(new Product("1", "Apfel"));
+        repo.addProduct(new Product("1", "Apfel"), 3.);
         ShopService shopService = new ShopService(repo, new OrderMapRepo(), IdService.DEFAULT_ID_SERVICE);
-        List<String> productsIds = List.of("1");
+        List<OrderItem<String>> productsIds = List.of(new OrderItem<>("1", 1.));
 
         //WHEN
-        Order actual = shopService.addOrder(productsIds);
+        Order actual = null;
+        try{
+            actual = shopService.addOrder(productsIds);
+        } catch (ProductNotFoundException e){fail();}
 
         //THEN
-        Order expected = new Order("-1", List.of(new Product("1", "Apfel")), OrderStatus.PROCESSING, Instant.now());
+        Order expected = new Order("-1", List.of(
+                new OrderItem<>(new Product("1", "Apfel"), 1.)),
+                OrderStatus.PROCESSING, Instant.now());
         assertEquals(expected.products(), actual.products());
         assertNotNull(expected.id());
 
@@ -32,12 +37,15 @@ class ShopServiceTest {
     @Test
     void updateOrderTest() {
         ProductRepo repo = new ProductRepo();
-        repo.addProduct(new Product("1", "Apfel"));
+        repo.addProduct(new Product("1", "Apfel"), 3.);
 
         ShopService shopService = new ShopService(repo, new OrderMapRepo(), IdService.DEFAULT_ID_SERVICE);
 
-        List<String> productsIds = List.of("1");
-        Order oldOrder = shopService.addOrder(productsIds);
+        List<OrderItem<String>> productsIds = List.of(new OrderItem<>("1", 1.));
+        Order oldOrder = null;
+        try{
+            oldOrder = shopService.addOrder(productsIds);
+        } catch (ProductNotFoundException e){fail();}
 
         Order newOrder = shopService.updateOrder(oldOrder, OrderStatus.IN_DELIVERY);
 
@@ -52,7 +60,10 @@ class ShopServiceTest {
     void addOrderTest_whenInvalidProductId_expectException() {
         //GIVEN
         ShopService shopService = new ShopService(new ProductRepo(), new OrderMapRepo(), IdService.DEFAULT_ID_SERVICE);
-        List<String> productsIds = List.of("1", "2");
+
+        List<OrderItem<String>> productsIds = List.of(
+                new OrderItem<>("1", 1.),
+                new OrderItem<>("2", 1.));
 
         //WHEN+THEN
         assertThrows(ProductNotFoundException.class, () -> shopService.addOrder(productsIds));
