@@ -10,7 +10,7 @@ class ShopServiceTest {
     @Test
     void addOrderTest() {
         //GIVEN
-        ShopService shopService = new ShopService();
+        ShopService shopService = new ShopService(new ProductRepo(), new OrderMapRepo(), IdService.DEFAULT_ID_SERVICE);
         List<String> productsIds = List.of("1");
 
         //WHEN
@@ -30,7 +30,7 @@ class ShopServiceTest {
     @Test
     void updateOderTest() {
 
-        ShopService shopService = new ShopService();
+        ShopService shopService = new ShopService(new ProductRepo(), new OrderMapRepo(), IdService.DEFAULT_ID_SERVICE);
         List<String> productsIds = List.of("1");
         Order oldOrder = shopService.addOrder(productsIds);
 
@@ -46,7 +46,7 @@ class ShopServiceTest {
     @Test
     void addOrderTest_whenInvalidProductId_expectException() {
         //GIVEN
-        ShopService shopService = new ShopService();
+        ShopService shopService = new ShopService(new ProductRepo(), new OrderMapRepo(), IdService.DEFAULT_ID_SERVICE);
         List<String> productsIds = List.of("1", "2");
 
         //WHEN+THEN

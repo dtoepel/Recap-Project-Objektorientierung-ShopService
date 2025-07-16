@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.Map;
 
 public interface OrderRepo {
 
@@ -9,4 +10,6 @@ public interface OrderRepo {
     Order addOrder(Order newOrder);
 
     void removeOrder(String id);
+
+    public Map<OrderStatus, Order> getOldestOrderPerStatus();
 }
