@@ -10,7 +10,9 @@ class ShopServiceTest {
     @Test
     void addOrderTest() {
         //GIVEN
-        ShopService shopService = new ShopService(new ProductRepo(), new OrderMapRepo(), IdService.DEFAULT_ID_SERVICE);
+        ProductRepo repo = new ProductRepo();
+        repo.addProduct(new Product("1", "Apfel"));
+        ShopService shopService = new ShopService(repo, new OrderMapRepo(), IdService.DEFAULT_ID_SERVICE);
         List<String> productsIds = List.of("1");
 
         //WHEN
@@ -28,9 +30,12 @@ class ShopServiceTest {
     }
 
     @Test
-    void updateOderTest() {
+    void updateOrderTest() {
+        ProductRepo repo = new ProductRepo();
+        repo.addProduct(new Product("1", "Apfel"));
 
-        ShopService shopService = new ShopService(new ProductRepo(), new OrderMapRepo(), IdService.DEFAULT_ID_SERVICE);
+        ShopService shopService = new ShopService(repo, new OrderMapRepo(), IdService.DEFAULT_ID_SERVICE);
+
         List<String> productsIds = List.of("1");
         Order oldOrder = shopService.addOrder(productsIds);
 
