@@ -21,4 +21,8 @@ public class ShopService {
 
         return orderRepo.addOrder(newOrder);
     }
+
+    public Order updateOrder(Order oldOrder, OrderStatus newOrderStatus) {
+        return oldOrder.withStatus(newOrderStatus);
+    }
 }
